@@ -1,13 +1,17 @@
 <template>
-  <div class="toast">
+  <div class="toast" v-if="show">
     <div class="toast-icon">
       <icon-success />
     </div>
     <div class="toast-content">
-      <div class="toast-title">Success</div>
-      <div class="toast-message">Data has been saved.</div>
+      <div class="toast-title">
+        {{ title }}
+      </div>
+      <div class="toast-message">
+        {{ message }}
+      </div>
     </div>
-    <button class="toast-button">&times;</button>
+    <button @click="hideToast" class="toast-button">&times;</button>
   </div>
 </template>
 
@@ -17,7 +21,29 @@ import IconWarning from "@/components/icons/IconWarning.vue";
 import IconSuccess from "@/components/icons/IconSuccess.vue";
 export default {
   name: 'SToast',
-  components: { IconError, IconWarning, IconSuccess }
+  components: { IconError, IconWarning, IconSuccess },
+  emits: ['hide'],
+  props: ['title', 'message', 'show'],
+  data() {
+    return {
+      timeout: null,
+    }
+  },
+  methods: {
+    hideToast() {
+      this.$emit('hide');
+    }
+  },
+  watch: {
+    show() {
+      if (this.timeout) {
+        clearTimeout(this.timeout);
+      }
+      this.timeout = setTimeout(() => {
+        this.hideToast();
+      }, 3000)
+    }
+  }
 }
 </script>
 
